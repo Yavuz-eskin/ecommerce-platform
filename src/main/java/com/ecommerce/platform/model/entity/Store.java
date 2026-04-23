@@ -31,6 +31,7 @@ public class Store {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private StoreStatus status = StoreStatus.PENDING;
 
     @CreationTimestamp
