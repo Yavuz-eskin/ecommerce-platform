@@ -50,6 +50,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() // Login ve Register herkese açık
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Dokümantasyona izin ver
+                .requestMatchers("/", "/index.html", "/styles.css", "/app.js", "/assets/**").permitAll() // Frontend dosyaları
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT için session tutulmaz

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Commerce Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <div class="app-container">
+        <!-- Auth View -->
+        <div id="authView" class="view active">
+            <div class="auth-wrapper">
+                <div class="glass-panel">
+                    <div class="logo">
+                        <div class="logo-icon"></div>
+                        <h1>Nexus</h1>
+                    </div>
+                    
+                    <div class="tabs">
+                        <button class="tab-btn active" data-target="loginForm">Sign In</button>
+                        <button class="tab-btn" data-target="registerForm">Sign Up</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" class="auth-form active">
+                        <div class="input-group">
+                            <label>Username</label>
+                            <input type="text" id="loginUsername" required placeholder="Enter your username">
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" required placeholder="Enter your password">
+                        </div>
+                        <button type="submit" class="btn primary-btn">Sign In <span class="arrow">→</span></button>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="registerForm" class="auth-form hidden">
+                        <div class="input-group">
+                            <label>Username</label>
+                            <input type="text" id="regUsername" required placeholder="Choose a username">
+                        </div>
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" id="regEmail" required placeholder="Enter your email">
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="regPassword" required placeholder="Create a password">
+                        </div>
+                        <div class="input-group">
+                            <label>I want to be a</label>
+                            <select id="regRole">
+                                <option value="CUSTOMER">Customer</option>
+                                <option value="VENDOR">Vendor</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn primary-btn">Create Account <span class="arrow">→</span></button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h2 class="hero-title">The Future of Commerce.</h2>
+                    <p class="hero-subtitle">Build your store, reach millions of customers, and scale your business globally with our next-gen platform.</p>
+                </div>
+                <div class="abstract-shape shape-1"></div>
+                <div class="abstract-shape shape-2"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="view hidden">
+            <nav class="top-nav">
+                <div class="logo">
+                    <div class="logo-icon small"></div>
+                    <h2>Nexus</h2>
+                </div>
+                <div class="user-menu">
+                    <span id="welcomeText" class="welcome-text"></span>
+                    <button id="logoutBtn" class="btn outline-btn">Logout</button>
+                </div>
+            </nav>
+
+            <main class="dashboard-content">
+                <header class="dashboard-header">
+                    <h1 id="dashboardTitle">Welcome Back</h1>
+                    <p id="dashboardSubtitle">Manage your activities and settings.</p>
+                </header>
+
+                <!-- Vendor Specific Section -->
+                <div id="vendorSection" class="dashboard-section hidden">
+                    <div class="glass-card" id="noStoreCard">
+                        <h3>Create Your Store</h3>
+                        <p>It looks like you don't have a store yet. Start your journey by creating one now.</p>
+                        <form id="createStoreForm" class="store-form">
+                            <div class="input-group">
+                                <label>Store Name</label>
+                                <input type="text" id="storeName" required placeholder="e.g. Nexus Electronics">
+                            </div>
+                            <div class="input-group">
+                                <label>Description</label>
+                                <textarea id="storeDesc" rows="3" placeholder="Tell customers about your store..."></textarea>
+                            </div>
+                            <button type="submit" class="btn primary-btn">Launch Store</button>
+                        </form>
+                    </div>
+
+                    <div class="glass-card hidden" id="myStoreCard">
+                        <div class="store-header">
+                            <div class="store-avatar"></div>
+                            <div class="store-info">
+                                <h3 id="displayStoreName">Store Name</h3>
+                                <span class="badge" id="displayStoreStatus">ACTIVE</span>
+                            </div>
+                        </div>
+                        <p id="displayStoreDesc" class="store-desc">Description</p>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <h4>Products</h4>
+                                <span>0</span>
+                            </div>
+                            <div class="stat-box">
+                                <h4>Orders</h4>
+                                <span>0</span>
+                            </div>
+                            <div class="stat-box">
+                                <h4>Revenue</h4>
+                                <span>$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Specific Section -->
+                <div id="customerSection" class="dashboard-section hidden">
+                    <div class="glass-card">
+                        <h3>Discover Products</h3>
+                        <p>The product catalog feature is currently under development. Stay tuned!</p>
+                        <div class="skeleton-grid">
+                            <div class="skeleton-box"></div>
+                            <div class="skeleton-box"></div>
+                            <div class="skeleton-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
