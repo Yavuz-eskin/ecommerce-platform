@@ -60,22 +60,29 @@ public class AuthService {
 
     public AuthResponse login(AuthRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new BusinessException("User not found"));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
-        String jwtToken = jwtUtil.generateToken(userDetails);
+        String token = jwtUtil.generateToken(userDetails);
 
         return AuthResponse.builder()
-                .token(jwtToken)
+                .token(token)
                 .username(user.getUsername())
                 .role(user.getRole().name())
                 .build();
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void updatePassword(String username, String newPassword) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BusinessException("User not found"));
+        if (newPassword != null && !newPassword.isBlank()) {
+            user.setPasswordHash(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        }
     }
 }

@@ -90,10 +90,12 @@
                         <button id="cartBtn" class="nav-btn">🛒 Cart <span id="cartBadge" class="badge-round">0</span></button>
                         <button id="myOrdersBtn" class="nav-btn">📦 My Orders</button>
                         <button id="shopBtn" class="nav-btn active-nav">🛍️ Shop</button>
+                        <button id="customerSettingsBtn" class="nav-btn">⚙️ Settings</button>
                     </div>
                     <div id="vendorNavLinks" class="nav-links hidden">
                         <button id="vendorStoreBtn" class="nav-btn active-nav">🏪 My Store</button>
                         <button id="vendorOrdersBtn" class="nav-btn">📋 Store Orders</button>
+                        <button id="vendorSettingsBtn" class="nav-btn">⚙️ Settings</button>
                     </div>
                     <span id="welcomeText" class="welcome-text"></span>
                     <button id="logoutBtn" class="btn outline-btn">Logout</button>
@@ -212,6 +214,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Settings Tab (Vendor) -->
+                    <div id="vendorSettingsTab" class="tab-content hidden">
+                        <div class="glass-card">
+                            <h3>Account Settings</h3>
+                            <form id="settingsForm" class="store-form">
+                                <div class="input-group">
+                                    <label>New Password</label>
+                                    <input type="password" id="setNewPassword" required placeholder="Enter new password">
+                                </div>
+                                <button type="submit" class="btn primary-btn">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Customer Specific Section -->
@@ -219,8 +235,16 @@
                     <!-- Shop Tab -->
                     <div id="customerShopTab" class="tab-content active">
                         <div class="glass-card">
-                            <h3>Discover Products</h3>
-                            <p>Explore the latest products from our amazing vendors.</p>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;">
+                                <div>
+                                    <h3>Discover Products</h3>
+                                    <p>Explore the latest products from our amazing vendors.</p>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <input type="text" id="searchInput" placeholder="Search products..." style="min-width:250px;">
+                                    <button id="searchBtn" class="btn primary-btn" style="margin-top:0;">Search</button>
+                                </div>
+                            </div>
                             <div id="customerProductList" class="product-grid">
                                 <!-- Products will be injected here -->
                             </div>
@@ -254,6 +278,20 @@
                             <div id="customerOrderHistory" class="order-history-list">
                                 <!-- Order history -->
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab (Customer) -->
+                    <div id="customerSettingsTab" class="tab-content hidden">
+                        <div class="glass-card">
+                            <h3>Account Settings</h3>
+                            <form id="settingsFormCustomer" class="store-form">
+                                <div class="input-group">
+                                    <label>New Password</label>
+                                    <input type="password" id="setNewPasswordCust" required placeholder="Enter new password">
+                                </div>
+                                <button type="submit" class="btn primary-btn">Update Password</button>
+                            </form>
                         </div>
                     </div>
                 </div>

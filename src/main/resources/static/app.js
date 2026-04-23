@@ -100,38 +100,111 @@ function setupEventListeners() {
     });
 
     // Create Store
-    document.getElementById('createStoreForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = 'Creating...';
+    const createStoreForm = document.getElementById('createStoreForm');
+    if(createStoreForm) {
+        createStoreForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Creating...';
 
-        try {
-            const res = await fetch(`${API_URL}/stores`, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({
-                    name: document.getElementById('storeName').value,
-                    description: document.getElementById('storeDesc').value
-                })
-            });
-            
-            const data = await res.json();
-            if(res.ok) {
-                showToast('Store created successfully!', 'success');
-                loadVendorDashboard(); // refresh
-            } else {
-                showToast(data.message || 'Failed to create store', 'error');
+            try {
+                const res = await fetch(`${API_URL}/stores`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('storeName').value,
+                        description: document.getElementById('storeDesc').value
+                    })
+                });
+                
+                const data = await res.json();
+                if(res.ok) {
+                    showToast('Store created successfully!', 'success');
+                    loadVendorDashboard(); // refresh
+                } else {
+                    showToast(data.message || 'Failed to create store', 'error');
+                }
+            } catch (err) {
+                showToast('Connection error', 'error');
+            } finally {
+                btn.innerHTML = originalText;
             }
-        } catch (err) {
-            showToast('Connection error', 'error');
-        } finally {
-            btn.innerHTML = originalText;
-        }
-    });
+        });
+    }
+
+    // Settings Form (Vendor)
+    const settingsForm = document.getElementById('settingsForm');
+    if(settingsForm) {
+        settingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Updating...';
+
+            try {
+                const res = await fetch(`${API_URL}/auth/profile/password`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                        newPassword: document.getElementById('setNewPassword').value
+                    })
+                });
+                
+                if(res.ok) {
+                    showToast('Password updated successfully!', 'success');
+                    document.getElementById('setNewPassword').value = '';
+                } else {
+                    showToast('Failed to update password', 'error');
+                }
+            } catch (err) {
+                showToast('Connection error', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+            }
+        });
+    }
+
+    // Settings Form (Customer)
+    const settingsFormCustomer = document.getElementById('settingsFormCustomer');
+    if(settingsFormCustomer) {
+        settingsFormCustomer.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Updating...';
+
+            try {
+                const res = await fetch(`${API_URL}/auth/profile/password`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                        newPassword: document.getElementById('setNewPasswordCust').value
+                    })
+                });
+                
+                if(res.ok) {
+                    showToast('Password updated successfully!', 'success');
+                    document.getElementById('setNewPasswordCust').value = '';
+                } else {
+                    showToast('Failed to update password', 'error');
+                }
+            } catch (err) {
+                showToast('Connection error', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+            }
+        });
+    }
 
     // Add Product
     const addProductForm = document.getElementById('addProductForm');
@@ -263,6 +336,9 @@ function setupNavTabs(navId, sectionId) {
                 document.getElementById('vendorOrdersTab').classList.remove('hidden');
                 document.getElementById('vendorOrdersTab').classList.add('active');
                 loadVendorOrders();
+            } else if(targetId === 'vendorSettingsBtn') {
+                document.getElementById('vendorSettingsTab').classList.remove('hidden');
+                document.getElementById('vendorSettingsTab').classList.add('active');
             } else if(targetId === 'shopBtn') {
                 document.getElementById('customerShopTab').classList.remove('hidden');
                 document.getElementById('customerShopTab').classList.add('active');
@@ -275,6 +351,27 @@ function setupNavTabs(navId, sectionId) {
                 document.getElementById('customerOrdersTab').classList.remove('hidden');
                 document.getElementById('customerOrdersTab').classList.add('active');
                 loadCustomerOrders();
+            } else if(targetId === 'customerSettingsBtn') {
+                document.getElementById('customerSettingsTab').classList.remove('hidden');
+                document.getElementById('customerSettingsTab').classList.add('active');
+            }
+        });
+    });
+}
+
+// Search listener
+const searchBtn = document.getElementById('searchBtn');
+if (searchBtn) {
+    searchBtn.addEventListener('click', () => {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('#customerProductList .product-card');
+        cards.forEach(card => {
+            const title = card.querySelector('.product-title').innerText.toLowerCase();
+            const desc = card.querySelector('.product-desc').innerText.toLowerCase();
+            if(title.includes(query) || desc.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
             }
         });
     });

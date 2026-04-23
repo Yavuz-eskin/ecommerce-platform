@@ -28,4 +28,13 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @PutMapping("/profile/password")
+    public ResponseEntity<Void> updatePassword(@RequestBody java.util.Map<String, String> request, org.springframework.security.core.Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return ResponseEntity.status(401).build();
+        }
+        authService.updatePassword(auth.getName(), request.get("newPassword"));
+        return ResponseEntity.ok().build();
+    }
 }
