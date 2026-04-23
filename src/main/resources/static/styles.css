@@ -69,8 +69,8 @@ body {
 }
 
 /* Auth View */
-#authView {
-    display: flex; /* overridden by .active if needed */
+#authView.active {
+    display: flex; 
 }
 
 .auth-wrapper {

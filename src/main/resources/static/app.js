@@ -95,10 +95,7 @@ function setupEventListeners() {
 
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        currentUser = null;
-        switchView('auth');
+        doLogout();
         showToast('Logged out successfully', 'success');
     });
 
@@ -233,7 +230,11 @@ function initDashboard() {
 
 async function loadCategories() {
     try {
-        const res = await fetch(`${API_URL}/categories`);
+        const res = await fetch(`${API_URL}/categories`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
         if (res.ok) {
             const categories = await res.json();
             const select = document.getElementById('prodCategory');
@@ -241,6 +242,9 @@ async function loadCategories() {
             categories.forEach(cat => {
                 select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
             });
+        } else if (res.status === 401 || res.status === 403) {
+            doLogout();
+            showToast('Session expired, please login again', 'error');
         }
     } catch (err) {
         console.error('Failed to load categories', err);
@@ -276,6 +280,9 @@ async function loadVendorDashboard() {
 
             // load vendor products
             loadVendorProducts();
+        } else if (res.status === 401 || res.status === 403) {
+            doLogout();
+            showToast('Session expired, please login again', 'error');
         } else if (res.status === 404 || res.status === 400 || res.status === 500) {
             noStoreCard.classList.remove('hidden');
             myStoreCard.classList.add('hidden');
@@ -285,6 +292,13 @@ async function loadVendorDashboard() {
     } catch (err) {
         console.error('Failed to load store', err);
     }
+}
+
+function doLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    currentUser = null;
+    switchView('auth');
 }
 
 async function loadVendorProducts() {
@@ -329,7 +343,11 @@ async function loadVendorProducts() {
 
 async function loadAllProducts() {
     try {
-        const res = await fetch(`${API_URL}/products`);
+        const res = await fetch(`${API_URL}/products`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
         if (res.ok) {
             const products = await res.json();
             const list = document.getElementById('customerProductList');
@@ -356,6 +374,9 @@ async function loadAllProducts() {
                     </div>
                 `;
             });
+        } else if (res.status === 401 || res.status === 403) {
+            doLogout();
+            showToast('Session expired, please login again', 'error');
         }
     } catch (err) {
         console.error('Failed to load all products', err);
