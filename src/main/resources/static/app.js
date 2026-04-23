@@ -43,8 +43,8 @@ function setupEventListeners() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    username: loginForm.loginUsername.value,
-                    password: loginForm.loginPassword.value
+                    username: document.getElementById('loginUsername').value,
+                    password: document.getElementById('loginPassword').value
                 })
             });
             
@@ -73,10 +73,10 @@ function setupEventListeners() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    username: registerForm.regUsername.value,
-                    email: registerForm.regEmail.value,
-                    password: registerForm.regPassword.value,
-                    role: registerForm.regRole.value
+                    username: document.getElementById('regUsername').value,
+                    email: document.getElementById('regEmail').value,
+                    password: document.getElementById('regPassword').value,
+                    role: document.getElementById('regRole').value
                 })
             });
             
