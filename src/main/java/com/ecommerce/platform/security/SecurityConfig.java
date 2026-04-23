@@ -50,9 +50,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() // Login ve Register herkese açık
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Dokümantasyona izin ver
-                .requestMatchers("/", "/index.html", "/styles.css", "/app.js", "/assets/**").permitAll() // Frontend dosyaları
+                .requestMatchers("/", "/index.html", "/styles.css", "/app.js", "/assets/**", "/h2-console/**").permitAll() // Frontend ve H2 dosyaları
                 .anyRequest().authenticated()
             )
+            .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 Console için gerekli
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT için session tutulmaz
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
