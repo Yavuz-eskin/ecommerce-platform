@@ -86,6 +86,15 @@
                     <h2>Nexus</h2>
                 </div>
                 <div class="user-menu">
+                    <div id="customerNavLinks" class="nav-links hidden">
+                        <button id="cartBtn" class="nav-btn">🛒 Cart <span id="cartBadge" class="badge-round">0</span></button>
+                        <button id="myOrdersBtn" class="nav-btn">📦 My Orders</button>
+                        <button id="shopBtn" class="nav-btn active-nav">🛍️ Shop</button>
+                    </div>
+                    <div id="vendorNavLinks" class="nav-links hidden">
+                        <button id="vendorStoreBtn" class="nav-btn active-nav">🏪 My Store</button>
+                        <button id="vendorOrdersBtn" class="nav-btn">📋 Store Orders</button>
+                    </div>
                     <span id="welcomeText" class="welcome-text"></span>
                     <button id="logoutBtn" class="btn outline-btn">Logout</button>
                 </div>
@@ -99,90 +108,152 @@
 
                 <!-- Vendor Specific Section -->
                 <div id="vendorSection" class="dashboard-section hidden">
-                    <div class="glass-card" id="noStoreCard">
-                        <h3>Create Your Store</h3>
-                        <p>It looks like you don't have a store yet. Start your journey by creating one now.</p>
-                        <form id="createStoreForm" class="store-form">
-                            <div class="input-group">
-                                <label>Store Name</label>
-                                <input type="text" id="storeName" required placeholder="e.g. Nexus Electronics">
-                            </div>
-                            <div class="input-group">
-                                <label>Description</label>
-                                <textarea id="storeDesc" rows="3" placeholder="Tell customers about your store..."></textarea>
-                            </div>
-                            <button type="submit" class="btn primary-btn">Launch Store</button>
-                        </form>
-                    </div>
+                    <!-- Store Tab -->
+                    <div id="vendorStoreTab" class="tab-content active">
+                        <div class="glass-card" id="noStoreCard">
+                            <h3>Create Your Store</h3>
+                            <p>It looks like you don't have a store yet. Start your journey by creating one now.</p>
+                            <form id="createStoreForm" class="store-form">
+                                <div class="input-group">
+                                    <label>Store Name</label>
+                                    <input type="text" id="storeName" required placeholder="e.g. Nexus Electronics">
+                                </div>
+                                <div class="input-group">
+                                    <label>Description</label>
+                                    <textarea id="storeDesc" rows="3" placeholder="Tell customers about your store..."></textarea>
+                                </div>
+                                <button type="submit" class="btn primary-btn">Launch Store</button>
+                            </form>
+                        </div>
 
-                    <div class="glass-card hidden" id="myStoreCard">
-                        <div class="store-header">
-                            <div class="store-avatar"></div>
-                            <div class="store-info">
-                                <h3 id="displayStoreName">Store Name</h3>
-                                <span class="badge" id="displayStoreStatus">ACTIVE</span>
+                        <div class="glass-card hidden" id="myStoreCard">
+                            <div class="store-header">
+                                <div class="store-avatar"></div>
+                                <div class="store-info">
+                                    <h3 id="displayStoreName">Store Name</h3>
+                                    <span class="badge" id="displayStoreStatus">ACTIVE</span>
+                                </div>
+                            </div>
+                            <p id="displayStoreDesc" class="store-desc">Description</p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <h4>Products</h4>
+                                    <span id="statProductCount">0</span>
+                                </div>
+                                <div class="stat-box">
+                                    <h4>Orders</h4>
+                                    <span id="statOrderCount">0</span>
+                                </div>
+                                <div class="stat-box">
+                                    <h4>Revenue</h4>
+                                    <span id="statRevenue">$0.00</span>
+                                </div>
                             </div>
                         </div>
-                        <p id="displayStoreDesc" class="store-desc">Description</p>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-box">
-                                <h4>Products</h4>
-                                <span id="statProductCount">0</span>
-                            </div>
-                            <div class="stat-box">
-                                <h4>Orders</h4>
-                                <span>0</span>
-                            </div>
-                            <div class="stat-box">
-                                <h4>Revenue</h4>
-                                <span>$0.00</span>
-                            </div>
+
+                        <div class="glass-card hidden" id="addProductCard">
+                            <h3>Add New Product</h3>
+                            <form id="addProductForm" class="store-form">
+                                <div class="input-group">
+                                    <label>Product Name</label>
+                                    <input type="text" id="prodName" required placeholder="Product Name">
+                                </div>
+                                <div class="input-group">
+                                    <label>Description</label>
+                                    <textarea id="prodDesc" rows="2" placeholder="Description"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Price</label>
+                                    <input type="number" id="prodPrice" required placeholder="0.00" min="0" step="0.01">
+                                </div>
+                                <div class="input-group">
+                                    <label>Stock Quantity</label>
+                                    <input type="number" id="prodStock" required placeholder="0" min="0">
+                                </div>
+                                <div class="input-group">
+                                    <label>Category</label>
+                                    <select id="prodCategory" required>
+                                        <option value="" disabled selected>Loading categories...</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn primary-btn">Add Product</button>
+                            </form>
+                        </div>
+
+                        <div class="glass-card hidden" id="myProductsCard">
+                            <h3>My Products</h3>
+                            <div id="vendorProductsList" class="product-grid"></div>
                         </div>
                     </div>
 
-                    <div class="glass-card hidden" id="addProductCard">
-                        <h3>Add New Product</h3>
-                        <form id="addProductForm" class="store-form">
-                            <div class="input-group">
-                                <label>Product Name</label>
-                                <input type="text" id="prodName" required placeholder="Product Name">
+                    <!-- Vendor Orders Tab -->
+                    <div id="vendorOrdersTab" class="tab-content hidden">
+                        <div class="glass-card">
+                            <h3>Customer Orders</h3>
+                            <p>Manage orders placed for your products.</p>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Product</th>
+                                            <th>Customer</th>
+                                            <th>Qty</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="vendorOrderList">
+                                        <!-- Orders injected here -->
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="input-group">
-                                <label>Description</label>
-                                <textarea id="prodDesc" rows="2" placeholder="Description"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <label>Price</label>
-                                <input type="number" id="prodPrice" required placeholder="0.00" min="0" step="0.01">
-                            </div>
-                            <div class="input-group">
-                                <label>Stock Quantity</label>
-                                <input type="number" id="prodStock" required placeholder="0" min="0">
-                            </div>
-                            <div class="input-group">
-                                <label>Category</label>
-                                <select id="prodCategory" required>
-                                    <option value="" disabled selected>Loading categories...</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn primary-btn">Add Product</button>
-                        </form>
-                    </div>
-
-                    <div class="glass-card hidden" id="myProductsCard">
-                        <h3>My Products</h3>
-                        <div id="vendorProductsList" class="product-grid"></div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Customer Specific Section -->
                 <div id="customerSection" class="dashboard-section hidden">
-                    <div class="glass-card">
-                        <h3>Discover Products</h3>
-                        <p>Explore the latest products from our amazing vendors.</p>
-                        <div id="customerProductList" class="product-grid">
-                            <!-- Products will be injected here -->
+                    <!-- Shop Tab -->
+                    <div id="customerShopTab" class="tab-content active">
+                        <div class="glass-card">
+                            <h3>Discover Products</h3>
+                            <p>Explore the latest products from our amazing vendors.</p>
+                            <div id="customerProductList" class="product-grid">
+                                <!-- Products will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cart Tab -->
+                    <div id="customerCartTab" class="tab-content hidden">
+                        <div class="glass-card">
+                            <h3>Shopping Cart</h3>
+                            <div class="cart-container">
+                                <div class="cart-items" id="cartItemsList">
+                                    <!-- Cart items -->
+                                </div>
+                                <div class="cart-summary">
+                                    <h4>Order Summary</h4>
+                                    <div class="summary-row">
+                                        <span>Total:</span>
+                                        <span id="cartTotal" class="price-big">$0.00</span>
+                                    </div>
+                                    <button id="checkoutBtn" class="btn primary-btn full-width mt-1">Proceed to Checkout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders Tab -->
+                    <div id="customerOrdersTab" class="tab-content hidden">
+                        <div class="glass-card">
+                            <h3>My Order History</h3>
+                            <div id="customerOrderHistory" class="order-history-list">
+                                <!-- Order history -->
+                            </div>
                         </div>
                     </div>
                 </div>
