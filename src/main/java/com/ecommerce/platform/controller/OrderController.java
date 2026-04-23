@@ -5,8 +5,6 @@ import com.ecommerce.platform.dto.response.OrderResponse;
 import com.ecommerce.platform.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,29 +18,29 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/checkout")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<OrderResponse> checkout(Authentication auth) {
-        return ResponseEntity.ok(orderService.checkout(auth.getName()));
+    public ResponseEntity<OrderResponse> checkout(@RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(orderService.checkout(username));
     }
 
     @GetMapping("/customer")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<List<OrderResponse>> getCustomerOrders(Authentication auth) {
-        return ResponseEntity.ok(orderService.getCustomerOrders(auth.getName()));
+    public ResponseEntity<List<OrderResponse>> getCustomerOrders(@RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(orderService.getCustomerOrders(username));
     }
 
     @GetMapping("/vendor")
-    @PreAuthorize("hasRole('VENDOR')")
-    public ResponseEntity<List<OrderItemResponse>> getVendorOrders(Authentication auth) {
-        return ResponseEntity.ok(orderService.getVendorOrders(auth.getName()));
+    public ResponseEntity<List<OrderItemResponse>> getVendorOrders(@RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(orderService.getVendorOrders(username));
     }
 
     @PutMapping("/vendor/{itemId}/status")
-    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<OrderItemResponse> updateOrderStatus(
             @PathVariable Long itemId,
             @RequestBody Map<String, String> payload,
-            Authentication auth) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(auth.getName(), itemId, payload.get("status")));
+            @RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(orderService.updateOrderStatus(username, itemId, payload.get("status")));
     }
 }

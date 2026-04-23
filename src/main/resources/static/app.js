@@ -113,7 +113,7 @@ function setupEventListeners() {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'X-User': localStorage.getItem('username')
                     },
                     body: JSON.stringify({
                         name: document.getElementById('storeName').value,
@@ -150,7 +150,7 @@ function setupEventListeners() {
                     method: 'PUT',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'X-User': localStorage.getItem('username')
                     },
                     body: JSON.stringify({
                         newPassword: document.getElementById('setNewPassword').value
@@ -185,7 +185,7 @@ function setupEventListeners() {
                     method: 'PUT',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'X-User': localStorage.getItem('username')
                     },
                     body: JSON.stringify({
                         newPassword: document.getElementById('setNewPasswordCust').value
@@ -220,7 +220,7 @@ function setupEventListeners() {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'X-User': localStorage.getItem('username')
                     },
                     body: JSON.stringify({
                         name: document.getElementById('prodName').value,
@@ -249,7 +249,7 @@ function setupEventListeners() {
 }
 
 function handleLoginSuccess(data) {
-    localStorage.setItem('token', data.token);
+    localStorage.setItem('username', data.username);
     localStorage.setItem('user', JSON.stringify({
         username: data.username,
         role: data.role
@@ -264,11 +264,12 @@ function handleLoginSuccess(data) {
 }
 
 function checkAuthStatus() {
-    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
     const user = localStorage.getItem('user');
-    
-    if (token && user) {
+
+    if (username && user) {
         currentUser = JSON.parse(user);
+        switchView('dashboard');
         initDashboard();
     } else {
         switchView('auth');
@@ -382,7 +383,7 @@ async function loadCategories() {
     try {
         const res = await fetch(`${API_URL}/categories`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'X-User': localStorage.getItem('username')
             }
         });
         if (res.ok) {
@@ -405,7 +406,7 @@ async function loadVendorDashboard() {
     try {
         const res = await fetch(`${API_URL}/stores/my-store`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'X-User': localStorage.getItem('username')
             }
         });
         
@@ -446,7 +447,7 @@ async function loadVendorDashboard() {
 }
 
 function doLogout() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('username');
     localStorage.removeItem('user');
     currentUser = null;
     switchView('auth');
@@ -456,7 +457,7 @@ async function loadVendorProducts() {
     try {
         const res = await fetch(`${API_URL}/products/my-products`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'X-User': localStorage.getItem('username')
             }
         });
         if (res.ok) {
@@ -495,7 +496,7 @@ async function loadVendorProducts() {
 async function loadVendorOrders(statsOnly = false) {
     try {
         const res = await fetch(`${API_URL}/orders/vendor`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            headers: { 'X-User': localStorage.getItem('username') }
         });
         if (res.ok) {
             const orders = await res.json();
@@ -551,7 +552,7 @@ async function updateOrderStatus(itemId, status) {
             method: 'PUT',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'X-User': localStorage.getItem('username')
             },
             body: JSON.stringify({ status: status })
         });
@@ -571,7 +572,7 @@ async function loadAllProducts() {
     try {
         const res = await fetch(`${API_URL}/products`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'X-User': localStorage.getItem('username')
             }
         });
         if (res.ok) {
@@ -615,7 +616,7 @@ async function addToCart(productId) {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'X-User': localStorage.getItem('username')
             },
             body: JSON.stringify({ productId: productId, quantity: 1 })
         });
@@ -636,7 +637,7 @@ async function addToCart(productId) {
 async function loadCart() {
     try {
         const res = await fetch(`${API_URL}/cart`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            headers: { 'X-User': localStorage.getItem('username') }
         });
         if (res.ok) {
             const cart = await res.json();
@@ -679,7 +680,7 @@ async function removeFromCart(itemId) {
     try {
         const res = await fetch(`${API_URL}/cart/${itemId}`, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            headers: { 'X-User': localStorage.getItem('username') }
         });
         if(res.ok) {
             showToast('Item removed', 'success');
@@ -701,7 +702,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async (e) => {
     try {
         const res = await fetch(`${API_URL}/orders/checkout`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            headers: { 'X-User': localStorage.getItem('username') }
         });
         if (res.ok) {
             showToast('Order placed successfully!', 'success');
@@ -721,7 +722,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async (e) => {
 async function loadCustomerOrders() {
     try {
         const res = await fetch(`${API_URL}/orders/customer`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            headers: { 'X-User': localStorage.getItem('username') }
         });
         if (res.ok) {
             const orders = await res.json();

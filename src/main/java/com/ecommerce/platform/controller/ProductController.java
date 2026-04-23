@@ -6,8 +6,6 @@ import com.ecommerce.platform.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,21 +18,22 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    @PreAuthorize("hasRole('VENDOR')")
-    public ResponseEntity<ProductResponse> createProduct(
+    public ResponseEntity<ProductResponse> addProduct(
             @Valid @RequestBody ProductRequest request,
-            Authentication authentication) {
-        return ResponseEntity.ok(productService.createProduct(request, authentication.getName()));
+            @RequestHeader(value = "X-User", required = false) String username) {
+        
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(productService.createProduct(request, username));
+    }
+
+    @GetMapping("/my-products")
+    public ResponseEntity<List<ProductResponse>> getMyProducts(@RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(productService.getMyProducts(username));
     }
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
-    }
-
-    @GetMapping("/my-products")
-    @PreAuthorize("hasRole('VENDOR')")
-    public ResponseEntity<List<ProductResponse>> getMyProducts(Authentication authentication) {
-        return ResponseEntity.ok(productService.getMyProducts(authentication.getName()));
     }
 }

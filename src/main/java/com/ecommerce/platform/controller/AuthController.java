@@ -31,11 +31,11 @@ public class AuthController {
     }
 
     @PutMapping("/profile/password")
-    public ResponseEntity<Void> updatePassword(@RequestBody java.util.Map<String, String> request, org.springframework.security.core.Authentication auth) {
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+    public ResponseEntity<Void> updatePassword(@RequestBody java.util.Map<String, String> request, @org.springframework.web.bind.annotation.RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null || username.isBlank()) {
             return ResponseEntity.status(401).build();
         }
-        authService.updatePassword(auth.getName(), request.get("newPassword"));
+        authService.updatePassword(username, request.get("newPassword"));
         return ResponseEntity.ok().build();
     }
 }

@@ -6,8 +6,6 @@ import com.ecommerce.platform.service.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,20 +16,18 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
-    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<StoreResponse> createStore(
             @Valid @RequestBody StoreRequest request,
-            Authentication authentication) {
+            @RequestHeader(value = "X-User", required = false) String username) {
         
-        String username = authentication.getName();
+        if (username == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(storeService.createStore(request, username));
     }
 
     @GetMapping("/my-store")
-    @PreAuthorize("hasRole('VENDOR')")
-    public ResponseEntity<StoreResponse> getMyStore(Authentication authentication) {
+    public ResponseEntity<StoreResponse> getMyStore(@RequestHeader(value = "X-User", required = false) String username) {
         
-        String username = authentication.getName();
+        if (username == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok(storeService.getMyStore(username));
     }
 }

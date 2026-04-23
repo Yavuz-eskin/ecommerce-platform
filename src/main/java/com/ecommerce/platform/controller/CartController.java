@@ -6,8 +6,6 @@ import com.ecommerce.platform.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,21 +16,21 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<CartResponse> addToCart(@Valid @RequestBody CartRequest request, Authentication auth) {
-        return ResponseEntity.ok(cartService.addToCart(auth.getName(), request));
+    public ResponseEntity<CartResponse> addToCart(@Valid @RequestBody CartRequest request, @RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(cartService.addToCart(username, request));
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<CartResponse> getCart(Authentication auth) {
-        return ResponseEntity.ok(cartService.getCart(auth.getName()));
+    public ResponseEntity<CartResponse> getCart(@RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(cartService.getCart(username));
     }
 
     @DeleteMapping("/{itemId}")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<Void> removeFromCart(@PathVariable Long itemId, Authentication auth) {
-        cartService.removeFromCart(auth.getName(), itemId);
+    public ResponseEntity<Void> removeFromCart(@PathVariable Long itemId, @RequestHeader(value = "X-User", required = false) String username) {
+        if (username == null) return ResponseEntity.status(401).build();
+        cartService.removeFromCart(username, itemId);
         return ResponseEntity.ok().build();
     }
 }
